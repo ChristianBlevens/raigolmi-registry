@@ -47,6 +47,11 @@ def api(method: str, url: str, payload=None, data: bytes | None = None,
 
 
 def pack(directory: Path) -> bytes:
+    """A layer's files, refused whole if one is a link: packing follows it, and a link merged
+    by mistake would publish what it points at on the runner, its token among them."""
+    links = sorted(str(p) for p in directory.rglob("*") if p.is_symlink())
+    if links:
+        sys.exit(f"{directory} holds links, which a layer may not: {', '.join(links)}")
     raw = io.BytesIO()
     with tarfile.open(fileobj=raw, mode="w", format=tarfile.PAX_FORMAT) as tar:
         for path in sorted(p for p in directory.rglob("*") if p.is_file()):

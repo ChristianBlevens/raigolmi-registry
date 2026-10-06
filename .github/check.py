@@ -33,12 +33,17 @@ def main() -> None:
         if len(batch) < 100:
             break
         page += 1
-    roots = {tuple(f["filename"].split("/")[:2]) for f in files}
+    # A rename touches the entry it came from as well as the one it lands in.
+    roots = {tuple(name.split("/")[:2]) for f in files
+             for name in (f["filename"], f.get("previous_filename")) if name}
     problems = []
     if len(roots) != 1:
         problems.append(f"an upload is one entry; this touches {sorted('/'.join(r) for r in roots)}")
     else:
-        [(kinds, entry_id)] = roots
+        [(kinds, *rest)] = roots
+        if not rest:
+            sys.exit(f"{kinds} is not under faces/, toolbelts/ or bodies/")
+        entry_id = rest[0]
         if kinds not in KINDS:
             problems.append(f"{kinds}/ is not faces/, toolbelts/ or bodies/")
         else:

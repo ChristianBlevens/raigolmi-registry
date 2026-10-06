@@ -1,5 +1,5 @@
 #!/bin/sh
-# Every firefox on this face starts here (daybook.py, page). His profile gets the prefs that
+# Every firefox on this face starts here (daybook.py, page). Its profile gets the prefs that
 # stop first-run pages: the privacy notice tab, about:welcome, "what's new" after updates.
 # A profile that does not exist yet is created first, so its very first start is quiet too.
 prefs='// daybook face: no first-run pages

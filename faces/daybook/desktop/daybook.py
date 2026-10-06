@@ -1,4 +1,4 @@
-"""The page: the day he is living, written as he goes (LAYER.md).
+"""The page: the day the user is living, written as they go (LAYER.md).
 
 One line in, one entry out. Plain words are a note. A line that starts with a verb does
 something, and what it opens is a *thread*: one app filling the screen on its own sway
@@ -11,7 +11,7 @@ Each day is a file, `~/Daybook/YYYY-MM-DD.md`, one entry per line:
     09:40:11  call the landlord about the heater
     10:02:40  → read https://example.org ‹from Claude›
 
-Anything else in the file (his own edits) is shown as it is.
+Anything else in the file (the user's own edits) is shown as it is.
 """
 from __future__ import annotations
 
@@ -312,7 +312,7 @@ class Page:
         entry = self.claim(con)
         self.threads[cid] = {"entry": entry, "title": con.get("name") or app, "app": app}
         # One thing on screen, always: a window that lands on the page or beside another
-        # gets a workspace of its own, and he is taken to it.
+        # gets a workspace of its own, and the user is taken to it.
         ws = placed.get(cid)
         alone = ws and ws != PAGE and sum(1 for w in placed.values() if w == ws) == 1
         if not alone:
@@ -373,7 +373,7 @@ class Page:
     def spawn(self, cmd: list[str], entry: Entry | None, app: str | None = None,
               cwd: Path | None = None) -> None:
         """Run `cmd`. One that opens a thread is started on a fresh workspace, so its window
-        is born the size of the screen; if none arrives, he is brought back to the page."""
+        is born the size of the screen; if none arrives, the user is brought back to the page."""
         self.log.write(f"{dt.datetime.now():%H:%M:%S} {cmd}\n")
         self.log.flush()
         ws = None
@@ -693,7 +693,7 @@ class Page:
                     self.put(y, left + 10, part, base)
             y += 1
 
-        # The line he writes on.
+        # The line the user writes on.
         self.put(h - 5, left, "─" * width, dim)
         self.put(h - 4, left, "›", accent | bold)
         shown = self.line
