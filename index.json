@@ -25,7 +25,7 @@
    "name": "Sign-in Browser",
    "description": "Only a browser, full screen: for the AI terminal's sign-ins on a machine with no other browser.",
    "thumbnail": null,
-   "downloads": 3
+   "downloads": 4
   },
   {
    "kind": "toolbelt",
