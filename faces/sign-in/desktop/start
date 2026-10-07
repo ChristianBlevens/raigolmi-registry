@@ -1,0 +1,31 @@
+#!/bin/sh
+# The face's one client (sway.conf): Firefox, started again a second after it is closed. The
+# apps are attached after the compositor starts, so it waits for them (up to a minute).
+n=0
+until [ -e "${XDG_RUNTIME_DIR:-/tmp}/raigolmid-apps-ready" ] || [ $n -ge 120 ]; do
+  sleep 0.5; n=$((n + 1))
+done
+
+# A profile of the face's own, under its own config dir. Its prefs stop first-run pages and
+# prompts that are noise here, and reopen the last tabs (/guide/faces.md).
+profile="${XDG_CONFIG_HOME:-$HOME/.config}/firefox"
+mkdir -p "$profile"
+cat > "$profile/user.js" <<'EOF'
+user_pref("browser.startup.page", 3);
+user_pref("browser.shell.checkDefaultBrowser", false);
+user_pref("browser.aboutwelcome.enabled", false);
+user_pref("trailhead.firstrun.didSeeAboutWelcome", true);
+user_pref("browser.startup.homepage_override.mstone", "ignore");
+user_pref("startup.homepage_welcome_url", "");
+user_pref("startup.homepage_welcome_url.additional", "");
+user_pref("datareporting.policy.firstRunURL", "");
+user_pref("datareporting.policy.dataSubmissionPolicyBypassNotification", true);
+user_pref("toolkit.telemetry.reportingpolicy.firstRun", false);
+user_pref("signon.rememberSignons", false);
+EOF
+
+log="${XDG_RUNTIME_DIR:-/tmp}/sign-in.log"
+while :; do
+  firefox --profile "$profile" 2>>"$log"
+  sleep 1
+done

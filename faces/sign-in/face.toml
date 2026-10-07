@@ -1,0 +1,8 @@
+id = "sign-in"
+name = "Sign-in Browser"
+description = "Only a browser, full screen: for the AI terminal's sign-ins on a machine with no other browser."
+
+[desktop]
+compositor = "sway"
+config_dir = "desktop/"
+apps = ["firefox"]

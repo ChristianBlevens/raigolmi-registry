@@ -1,0 +1,60 @@
+# A face's compositor, as the image §4.7 says it ships as.
+#
+# §4.7: a face's compositor is never installed into the host. The host image is immutable
+# and carries no compositor for faces, so `raigolmid` starts one from here (`faces.py`) as an
+# ordinary Wayland client of the host compositor. The image is named for the compositor a
+# face declares — `raigolmi/face-<compositor>:latest` — so a face wanting one nobody has
+# packaged fails on a missing image, which names what to build.
+#
+# This is the image Phase 0B proved, promoted out of `spikes/0b/face-compositor/`. The one
+# difference is the config: the spike mounted a single file over `/etc/face/sway.conf`,
+# while `faces.py` mounts the face's whole `desktop/` directory at `/etc/face`, so a face
+# can ship a theme, a bar config and includes beside its compositor config.
+#
+# ⚠ **wlroots, and that is a requirement rather than a preference.** §4.7 ships software
+# rendering, under which the host compositor advertises no `zwp_linux_dmabuf_v1`. wlroots'
+# Wayland backend falls back to `wl_shm` and starts; aquamarine's requires dmabuf and
+# refuses, taking every aquamarine-based compositor with it (Hyprland included). Measured,
+# not assumed: `docs/old/phase0-findings.md § §4.7's container packaging route`.
+FROM docker.io/library/fedora:42
+
+# foot is a client to put inside the nested session, so a compositor that started and is
+# drawing nothing is distinguishable from one that started and works.
+#
+# The mesa packages are named explicitly and are NOT optional: mesa-dri-drivers is a weak
+# dependency, so install_weak_deps=False silently removes the driver and the failure
+# surfaces a long way from its cause.
+#
+# The font, locale and cursor packages are the difference between a face that runs and a
+# face that can be looked at. Without them foot warns that the locale is not UTF-8 and that
+# it has no monospace font, and the nested session draws no pointer at all — which reads as
+# "the face takes no input".
+RUN dnf install -y --setopt=install_weak_deps=False \
+        sway foot \
+        mesa-dri-drivers mesa-libEGL mesa-libgbm \
+        glibc-langpack-en dejavu-sans-mono-fonts dejavu-sans-fonts \
+        adwaita-cursor-theme \
+    && dnf clean all
+
+# The host runs raigolmid as uid 1000 and the Wayland socket is that user's. No chown here,
+# for §4.4.4's reason: the identity comes from the host, and `faces.py` passes it with
+# `--user` rather than relying on this line matching.
+RUN useradd --uid 1000 --create-home face
+USER 1000:1000
+
+# A face that declares no config_dir still has to start, so the image carries a config of
+# its own; a mount at /etc/face replaces it wholesale.
+COPY sway.conf /etc/face/sway.conf
+
+# HOME is set explicitly because `docker run --user` does NOT read /etc/passwd: HOME stays
+# whatever the image says, and an unset HOME resolves to `/`, which is read-only here.
+#
+# `WLR_RENDERER` is deliberately NOT pinned: wlroots picks a renderer that works with what
+# the container is given; forcing one here would be a knob set from the wrong side.
+ENV HOME=/home/face \
+    XDG_CACHE_HOME=/home/face/.cache \
+    LANG=C.UTF-8 \
+    XCURSOR_THEME=Adwaita \
+    XCURSOR_SIZE=24
+
+ENTRYPOINT ["sway", "-c", "/etc/face/sway.conf"]
