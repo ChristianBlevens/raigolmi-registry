@@ -7,7 +7,7 @@ until [ -e "${XDG_RUNTIME_DIR:-/tmp}/raigolmid-apps-ready" ] || [ $n -ge 120 ]; 
 done
 
 # A profile of the face's own, under its own config dir. Its prefs stop first-run pages and
-# prompts that are noise here, and reopen the last tabs (/guide/faces.md).
+# prompts that are noise here, keep new tabs blank, and reopen the last tabs (/guide/faces.md).
 profile="${XDG_CONFIG_HOME:-$HOME/.config}/firefox"
 mkdir -p "$profile"
 cat > "$profile/user.js" <<'EOF'
@@ -22,6 +22,9 @@ user_pref("datareporting.policy.firstRunURL", "");
 user_pref("datareporting.policy.dataSubmissionPolicyBypassNotification", true);
 user_pref("toolkit.telemetry.reportingpolicy.firstRun", false);
 user_pref("signon.rememberSignons", false);
+user_pref("browser.newtabpage.enabled", false);
+user_pref("browser.startup.homepage", "about:blank");
+user_pref("browser.toolbars.bookmarks.visibility", "never");
 EOF
 
 log="${XDG_RUNTIME_DIR:-/tmp}/sign-in.log"

@@ -1,7 +1,7 @@
 <!-- purpose: what the Sign-in Browser face is and what each of its files does
 not-here: how a face is built in general (/guide/faces.md); the sign-in steps themselves (the AI terminal prints them)
 shape: bounded
-audited: 1166 2026-10-06
+audited: 1200 2026-10-06
 -->
 # Sign-in Browser
 
@@ -13,6 +13,7 @@ the terminal with a right-click. Once signed in, ask the machine tab for the des
 
 - `face.toml`: a sway desktop whose one app is Firefox; no editor window.
 - `desktop/sway.conf`: no borders, no gaps, no key bindings of its own; starts `desktop/start`.
-- `desktop/start`: waits for the apps, writes the profile's prefs (no first-run pages, no
-  password prompts, the last tabs reopened) and runs Firefox, again a second after it closes.
+- `desktop/start` (executable): waits for the apps, writes the profile's prefs (no first-run
+  pages, no password prompts, blank new tabs, the last tabs reopened) and runs Firefox, again a
+  second after it closes.
 - `_compositors/sway/`: the compositor image, the same files every sway face carries.
