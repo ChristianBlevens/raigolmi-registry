@@ -17,15 +17,15 @@
   {
    "kind": "face",
    "id": "sign-in",
-   "version": 1,
-   "asset": "https://github.com/ChristianBlevens/raigolmi-registry/releases/download/face-sign-in-v1/face-sign-in.tar.gz",
-   "sha256": "sha256:5b2316aea3b7024f944133163c3fda8361eb06c62940e2b229b42e3493a81097",
-   "size": 3534,
+   "version": 2,
+   "asset": "https://github.com/ChristianBlevens/raigolmi-registry/releases/download/face-sign-in-v2/face-sign-in.tar.gz",
+   "sha256": "sha256:d807a2798a8d9680d939505e50661cec6d0badcc56f36ee153b8585d873504cb",
+   "size": 3621,
    "author": "ChristianBlevens",
    "name": "Sign-in Browser",
    "description": "Only a browser, full screen: for the AI terminal's sign-ins on a machine with no other browser.",
    "thumbnail": null,
-   "downloads": 0
+   "downloads": 1
   },
   {
    "kind": "toolbelt",
